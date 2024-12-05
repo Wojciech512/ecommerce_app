@@ -1,76 +1,71 @@
-# README
+# 🛒 E-commerce Application Project
 
-## E-commerce Application Project with Django, Azure, and Online Payment Integration
-
-### Table of Contents
-1. [Introduction](#introduction)
-2. [Technologies Used](#technologies-used)
-   - [Backend - Django](#backend---django)
-   - [Frontend - Django Views + Bootstrap](#frontend---django-views--bootstrap)
-   - [Hosting - Azure App Service](#hosting---azure-app-service)
-   - [Data Storage - Azure Database for PostgreSQL](#data-storage---azure-database-for-postgresql)
-   - [Version Control - GitHub](#version-control---github)
-3. [Key Features and Components](#key-features-and-components)
-4. [Acceptance Criteria](#acceptance-criteria)
-5. [MoSCoW Analysis](#moscow-analysis)
-6. [Component Diagrams](#component-diagrams)
-7. [Use Cases](#use-cases)
-8. [User Stories](#user-stories)
-9. [Application Wireframes](#application-wireframes)
+## Table of Contents
+1. [About the Project](#-about-the-project)
+2. [Key Features](#-key-features)
+3. [Technologies](#-technologies)
+4. [Key Features and Components](#-key-features-and-components)
+5. [Main Feature Sequence Diagram](#-main-feature-sequence-diagram)
+6. [Setup](#-setup)
+7. [Configuring a Google Account for Sending Emails](#-Configuring-a-Google-Account-for-Sending-Emails)
+8. [License](#-license)
 
 ---
 
-### Introduction
+## 📝 About the Project
 
-This project is a complete e-commerce application built using the Django framework, integrated with Azure services for hosting and data storage, and equipped with online payment systems. The goal is to create a functional and secure online store that meets all functional requirements outlined in the project guidelines.
+This project is a fully functional e-commerce application developed using the **Django framework**. It integrates core features such as:
 
----
+- **Secure payment processing**
+- **Responsive design**
+- **Robust user account management**
 
-### Technologies Used
-
-#### Backend - Django
-
-The application backend is built with Django, a powerful framework that enables efficient and secure management of core functionalities such as user authorization, session handling, and database operations. Key features include:
-
-- User registration and authentication
-- Shopping cart and session management
-- Database handling for user, product, and order data
-- API integration for external services (e.g., payment systems)
-
-#### Frontend - Django Views + Bootstrap
-
-Django Views ensure seamless integration between backend logic and data display. Bootstrap is used for responsive design, optimizing the site for mobile and desktop users alike. Important elements include:
-
-- Shopping cart interface
-- User registration and login forms
-- Checkout and payment process screens
-
-#### Hosting - Azure App Service
-
-The application is hosted on Azure App Service, providing scalability, reliability, and ease of deployment. Key benefits:
-
-- High availability for order processing, payments, and product management
-- Automated scaling and version updates to handle varying traffic loads
-
-#### Data Storage - Azure Database for PostgreSQL
-
-Data management is handled by Azure Database for PostgreSQL, ensuring secure and scalable storage of user, product, and order information. Benefits include:
-
-- High-performance data access
-- Automatic backups for data security
-- Scalability for user and product growth
-
-#### Version Control - GitHub
-
-GitHub is used for version control, team collaboration, and feature management. Key functionalities include:
-
-- Tracking code changes and managing contributions
-- Structured deployment and version management
-- Safe and organized development of critical features like shopping cart, payments, and security
+Hosting and data storage are powered by **Azure services**, ensuring scalability and reliability. The application is designed to handle high user traffic and provide a seamless shopping experience for both end-users and administrators.
 
 ---
 
-### Key Features and Components
+## 🚀 Key Features
+
+### 🔑 End-user Features:
+- **Shopping Cart**: Add, remove, and update products with session-based retention.
+- **Order Processing**: Full checkout flow with shipping options.
+- **User Account**: Registration, login, password reset, and account management.
+- **Payment Integration**: Secure payments via PayPal and other platforms.
+
+### 🛠️ Admin Features:
+- **Product Management**: Add, update, and remove products.
+- **User Management**: Manage user accounts and permissions.
+- **Order Insights**: Review purchase history and manage logs.
+
+### 🔒 Security:
+- **SQL Injection protection**, CSRF, and session security.
+- **Secure communication** with SSL/TLS enforcement.
+- Validation of all user inputs to ensure data integrity.
+
+---
+
+## 💻 Technologies
+
+### Backend
+- **Django Framework**: Efficient management of core application logic, user authentication, and API integrations.
+
+### Frontend
+- **Django Views**: Seamless integration between backend logic and UI.
+- **Bootstrap**: Responsive design for mobile and desktop optimization.
+
+### Hosting and Data Storage
+- **Azure App Service**: High availability, scalability, and easy deployment.
+- **Azure Database for PostgreSQL**: Reliable and secure database for user, product, and transaction data.
+
+### Payment Integration
+- **PayPal**: Secure and widely accepted payment gateway.
+
+### Version Control
+- **GitHub**: Collaboration, version control, and CI/CD workflows.
+
+---
+
+## 📊 Key Features and Components
 
 | Id | Feature                     | Description                                                                                   |
 |----|------------------------------|-----------------------------------------------------------------------------------------------|
@@ -85,55 +80,90 @@ GitHub is used for version control, team collaboration, and feature management. 
 
 ---
 
-### Acceptance Criteria
-
-1. **Shopping Cart**  
-   - Add, remove, and update item quantities.
-   - Maintain cart contents between user sessions.
-   - Correct handling of user sessions.
-
-2. **Order Process and Shipping**  
-   - Add items to cart and complete checkout.
-   - Choose preferred shipping method and finalize purchase.
-
-3. **User Registration & Login**  
-   - User account creation, login, password reset.
-   - Email verification for added security.
-
-4. **User Account Management**  
-   - Update account details (email, billing address).
-   - View order and purchase history.
-
-5. **Admin Account**  
-   - Manage user permissions, view server logs.
-   - Add/update products and review purchase history.
-
-6. **Payment Integration**  
-   - Online payments with PayPal, Przelewy24, and cards.
-   - Full payment integration within the order process.
-
-7. **Security**  
-   - SQL Injection prevention and SECRET_KEY management.
-   - CSRF protection, trusted origins, and session security.
-   - HTTPS enforced, secure static/media file access.
-
-8. **Data Validation**  
-   - Ensure correct data entry in all forms.
+## 📈 Main Feature Sequence Diagram
+![diagram sekwencji.png](static%2Fmedia%2Fdiagram%20sekwencji.png)
 
 ---
 
-### MoSCoW Analysis
+## ⚙️ Setup
 
-| Category       | Feature                                                                         |
-|----------------|---------------------------------------------------------------------------------|
-| **Must have**  | User registration/login, shopping cart, order process, payments, security, data storage |
-| **Should have**| Email verification, order tracking, product search, server logs                  |
-| **Could have** | Integration with more payment platforms, push/email notifications, product ratings |
-| **Won't have** | Advanced personalization, social media integration, mobile app                   |
+Follow these steps to set up the project in your preferred development environment:
+
+1. **Clone the Repository**:
+   - Use your IDE's version control integration or run the following commands:
+     ```bash
+     git clone https://github.com/your-repo-name.git
+     cd your-repo-name
+     ```
+
+2. **Create a Virtual Environment**:
+   - Run the following commands in the terminal:
+     ```bash
+     python -m venv venv
+     source venv/bin/activate  # On Windows: venv\Scripts\activate
+     ```
+
+3. **Install Dependencies**:
+   - Install the project dependencies:
+     ```bash
+     pip install -r requirements.txt
+     ```
+
+4. **Set Up Environment Variables**:
+   - Create a `.env` file in the project root directory (if not already provided) with the following content:
+     ```
+     SECRET_KEY=your-django-secret-key
+     DB_HOST=your-database-host
+     DB_NAME=your-database-name
+     DB_USER=your-database-user
+     DB_PASSWORD=your-database-password
+     ```
+   - Alternatively, configure environment variables directly in your IDE's run/debug configuration settings.
+
+5. **Apply Database Migrations**:
+   - Run the following command:
+     ```bash
+     python manage.py migrate
+     ```
+
+6. **Run the Development Server**:
+   - Start the server:
+     ```bash
+     python manage.py runserver
+     ```
+   - By default, the application will be available at `http://127.0.0.1:8000`.
+
+7. **Optional - Set Debugging**:
+   - Configure your IDE to support Django debugging. Most IDEs support setting breakpoints and running a debug configuration.
+---
+### 📧 Configuring a Google Account for Sending Emails
+
+To configure your application to send emails using a Google account, follow these steps:
+
+1. **Enable 2-Step Verification for Your Google Account**:
+   - Go to your Google Account's [Security Settings](https://myaccount.google.com/security).
+   - Enable **2-Step Verification** if it is not already active.
+
+2. **Generate an App Password**:
+   - After enabling 2-Step Verification, go to the [App Passwords](https://myaccount.google.com/apppasswords) page.
+   - Select "Mail" as the app and "Other" as the device, then give it a name (e.g., `Django App`).
+   - Click **Generate**. A password will be displayed—copy it securely.
+
+3. **Set Up Your Environment Variables**:
+   - Open your `.env` file and add the following lines:
+     ```env
+     EMAIL_HOST_USER=your-app-email
+     EMAIL_HOST_PASSWORD=your-app-password
+     ```
+   - Replace `your-app-email` and `your-app-password` with the account email and app password you generated in Step 2.
+
+4. **Ensure Security**:
+   - Do not commit the `.env` file containing sensitive information to your version control system.
+   - Add `.env` to your `.gitignore` file to protect it.
+
+By following these steps, your application will be able to send emails using your configured Google account.
 
 ---
+## 📄 License
 
-### Component Diagrams
-![test](static/media/images/sekwencja administratora.jpg)
-![test](static/media/images/sekwencja klienta.jpg)
----
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT). You are free to use, modify, and distribute this project under the terms of the license.

@@ -1,0 +1,357 @@
+{% include "store/base.html" %}
+{% include "store/modal.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/modal.css' %}" />
+<link rel="stylesheet" href="{% static 'css/layout.css' %}" />
+
+    
+<body>
+  <br />
+  <div class="container bg-white shadow-md p-5 form-layout w-50">
+    <h4>
+      <i class="fa fa-hand-paper-o" aria-hidden="true"></i> &nbsp; Admin Panel
+    </h4>
+    <hr />
+    <p>
+        Hello, <strong>{{ user.username }}!</strong><br> Welcome to your Command Center! Here, you can effortlessly oversee products, monitor logs, and manage user accounts with precision.
+        Control permissions, fine-tune settings, and keep your platform running smoothly—all in one place. Dive in and make managing your digital storefront a breeze!
+    </p>
+  </div>
+
+    <div class="container bg-white shadow-md p-5 form-layout w-100">
+    <h4>
+      <i class="fa fa-line-chart" aria-hidden="true"></i> &nbsp; Sales Statistics
+       <span class="float-end">
+        <a href="{% url 'generate_pdf_report' %}" class="btn btn-info">
+          Download Report
+        </a>
+      </span>
+    </h4>
+    <hr />
+    <div class="row">
+      <div class="col-md-6">
+        <h5>Daily Sales</h5>
+          <hr/>
+          <div style="max-width: 500px; margin: 0 auto;">
+              <canvas id="dailySalesChart"></canvas>
+          </div>
+      </div>
+      <div class="col-md-6">
+        <h5>Monthly Sales</h5>
+          <hr/>
+          <div style="max-width: 500px; margin: 0 auto;">
+              <canvas id="monthlySalesChart"></canvas>
+          </div>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-6">
+        <h5>Best Selling Products</h5>
+          <hr/>
+        <div style="max-width: 400px; margin: 0 auto;">
+          <canvas id="topProductsChart"></canvas>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <h5>Sales by Category</h5>
+          <hr/>
+        <div style="max-width: 400px; margin: 0 auto;">
+          <canvas id="salesByCategoryChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="users" class="container bg-white shadow-md p-5 form-layout w-100">
+    <h4>
+      <i class="fa fa-users" aria-hidden="true"></i> &nbsp; Management users
+    </h4>
+    <hr />
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <td>#</td>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Entitlements</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td>{{ forloop.counter0|add:user_start_index|add:1 }}</td>
+          <td>{{ u.username }}</td>
+          <td>{{ u.email }}</td>
+          <td>
+            {% if u.is_staff %} Administrator {% else %} Użytkownik {% endif %}
+          </td>
+          <td>
+            <button
+              class="btn btn-danger delete-user-button"
+              data-username="{{ u.username }}"
+              data-userid="{{ u.id }}"
+              data-operation="delete_user"
+              data-message="Are you sure you want to delete user <strong>{{ u.username }}</ }}?</strong>"
+              {% if user.username == u.username %} disabled {% endif %}
+              onclick="openModal(this)"
+            >
+              Delete
+            </button>
+            {% if u.is_superuser %}
+                <button
+                  class="btn btn-info set-admin-user-button"
+                  data-username="{{ u.username }}"
+                  data-userid="{{ u.id }}"
+                  data-operation="change_permissions"
+                  data-message="Are you sure you want to <strong>revoke the administrator privileges</strong> of the user {{ u.username }}?"
+                  {% if user.username == u.username %} disabled {% endif %}
+                  onclick="openModal(this)"
+                >
+                  Set admin as user
+                </button>
+              {% else %}
+                <button
+                  class="btn btn-info set-user-admin-button"
+                  data-username="{{ u.username }}"
+                  data-userid="{{ u.id }}"
+                  data-operation="change_permissions"
+                  data-message="Are you sure you want to <strong>grant administrator privileges</strong> to the user {{ u.username }}?"
+                  {% if user.username == u.username %} disabled {% endif %}
+                  onclick="openModal(this)"
+                >
+                  Set user as admin
+                </button>
+              {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+      <nav aria-label="User pagination">
+        <ul class="pagination">
+          {% if users.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?user_page={{ users.previous_page_number }}#users" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">&laquo;</span>
+          </li>
+          {% endif %}
+          {% for num in users.paginator.page_range %}
+          {% if users.number == num %}
+          <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+          {% else %}
+          <li class="page-item"><a class="page-link" href="?user_page={{ num }}#users">{{ num }}</a></li>
+          {% endif %}
+          {% endfor %}
+          {% if users.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?user_page={{ users.next_page_number }}#users" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">&raquo;</span>
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
+  </div>
+
+ <div id="products" class="container bg-white shadow-md p-5 form-layout w-100">
+    <h4>
+      <i class="fa fa-shopping-cart" aria-hidden="true"></i> &nbsp; Product management
+        <span  class="float-end">
+        <a href="{% url 'create_category' %}" class="btn btn-info">
+          Add New Category
+        </a>
+        <a href="{% url 'create_product' %}" class="btn btn-info">
+          Add New Product
+        </a>
+      </span>
+    </h4>
+    <hr />
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Title</th>
+          <th>Image</th>
+          <th>Brand</th>
+          <th>Description</th>
+          <th>Slug</th>
+          <th>Price</th>
+          <th>Category</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in products %}
+        <tr>
+        <td>{{ forloop.counter0|add:product_start_index|add:1 }}</td>
+          <td>{{ p.title }}</td>
+          <td>
+            <img src="{{ p.image.url }}" alt="{{ products.title }}" width="50">
+          </td>
+          <td>{{ p.brand  }}</td>
+          <td>{{ p.description   }}</td>
+          <td>{{ p.slug }}</td>
+          <td>$ {{ p.price }}</td>
+          <td>{{ p.category }}</td>
+
+          <td>
+            <button
+              class="btn btn-primary edit-product-button"
+              data-productid="{{ p.id }}"
+            >
+              Edit
+            </button>
+            <button
+              class="btn btn-danger delete-product-button"
+              data-producttitle="{{ p.title }}"
+              data-productid="{{ p.id }}"
+              data-operation="delete_product"
+              data-message='Are you sure you want to remove the product <strong>{{ p.title }}</strong>?'
+              onclick="openModal(this)"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+     <nav aria-label="Product pagination">
+        <ul class="pagination">
+          {% if products.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?product_page={{ products.previous_page_number }}#products" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">&laquo;</span>
+          </li>
+          {% endif %}
+          {% for num in products.paginator.page_range %}
+          {% if products.number == num %}
+          <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+          {% else %}
+          <li class="page-item"><a class="page-link" href="?product_page={{ num }}#products">{{ num }}</a></li>
+          {% endif %}
+          {% endfor %}
+          {% if products.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?product_page={{ products.next_page_number }}#products" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">&raquo;</span>
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
+  </div>
+
+ <div id="logs" class="container bg-white shadow-md p-5 form-layout w-100">
+    <h4>
+      <i class="fa fa-file-text" aria-hidden="true"></i> &nbsp; Logs
+        <span class="float-end">
+            <button
+                class="btn btn-warning delete-logs-button"
+                data-operation="delete_logs"
+                data-message="Are you sure you want <strong>to delete all logs?</strong>"
+                onclick="openModal(this)">
+                Clear logs
+            </button>
+        </span>
+    </h4>
+    <hr />
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>User</th>
+          <th>Event Type</th>
+          <th>Description</th>
+          <th>Timestamp</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log in logs %}
+        <tr>
+          <td>{{ forloop.counter0|add:logs_start_index|add:1 }}</td>
+          <td>
+            {% if log.user %}
+                {{ log.user.username }}
+            {% else %}
+                Anonymous
+            {% endif %}
+            </td>
+          <td>{{ log.get_event_type_display }}</td>
+          <td>{{ log.description }}</td>
+          <td>{{ log.timestamp|date:"Y-m-d H:i:s" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4">No logs available.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+     <nav aria-label="Logs pagination">
+        <ul class="pagination">
+          {% if logs.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?logs_page={{ logs.previous_page_number }}#logs" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">&laquo;</span>
+          </li>
+          {% endif %}
+          {% for num in logs.paginator.page_range %}
+          {% if logs.number == num %}
+          <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+          {% else %}
+          <li class="page-item"><a class="page-link" href="?logs_page={{ num }}#logs">{{ num }}</a></li>
+          {% endif %}
+          {% endfor %}
+          {% if logs.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?logs_page={{ logs.next_page_number }}#logs" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">&raquo;</span>
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
+  </div>
+
+</body>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{% static 'js/modal.js' %}"></script>
+    <script>
+      var salesData = JSON.parse('{{ sales_data|escapejs }}');
+      var monthlySalesData = JSON.parse('{{ monthly_sales_data|escapejs }}');
+      var topProducts = JSON.parse('{{ top_products|escapejs }}');
+      var salesByCategory = JSON.parse('{{ sales_by_category|escapejs }}');
+    </script>
+    <script src="{% static 'js/plots.js' %}"></script>
+{% endblock %}
