@@ -8,20 +8,13 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 # Ustawienia bezpieczeństwa
 DEBUG = True
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['*']
+CSRF_TRUSTED_ORIGINS = ['https://ecommerce-ww512.azurewebsites.net']
 
-# Konfiguracja bazy danych
-# DATABASE = os.environ.get('AZURE_POSTGRESQL_DATABASE')
-# HOST = os.environ.get('AZURE_POSTGRESQL_HOST')
-# PASSWORD = os.environ.get('AZURE_POSTGRESQL_PASSWORD')
-# PORT = os.environ.get('AZURE_POSTGRESQL_PORT')
-# USERNAME = os.environ.get('AZURE_POSTGRESQL_USERNAME')
-# NAME = os.environ.get('AZURE_POSTGRESQL_NAME')
-
-NAME = os.getenv('AZURE_POSTGRESQL_NAME'),
-USER = os.getenv('AZURE_POSTGRESQL_USERNAME'),
-PASSWORD = os.getenv('AZURE_POSTGRESQL_PASSWORD'),
-HOST = os.getenv('AZURE_POSTGRESQL_HOST'),
+#Pobieranie zmiennych środowiskowych Azure Web app
+NAME = str(os.getenv('AZURE_POSTGRESQL_NAME'))
+USER = str(os.getenv('AZURE_POSTGRESQL_USERNAME'))
+PASSWORD = str(os.getenv('AZURE_POSTGRESQL_PASSWORD'))
+HOST = str(os.getenv('AZURE_POSTGRESQL_HOST'))
 PORT = int(os.environ.get('AZURE_POSTGRESQL_PORT', 5432))
 if NAME and USER and PASSWORD and HOST and PORT:
     DATABASES = {

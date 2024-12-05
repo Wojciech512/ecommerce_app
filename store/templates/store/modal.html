@@ -1,0 +1,17 @@
+<div id="operationModal" class="modal">
+  <div class="modal-content">
+    <p id="modalMessage"></p>
+    <form id="operationForm" method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="operation_type" id="operationType">
+      <input type="hidden" name="user_id" id="userId">
+      <input type="hidden" name="user_id" id="userId">
+      <input type="hidden" name="product_id" id="productId">
+      <input type="hidden" name="delete_logs " id="deleteLogs ">
+      <div class="modal-buttons">
+        <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn btn-danger" id="confirmButton">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
