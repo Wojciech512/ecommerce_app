@@ -7,7 +7,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY', default='temp-key')
 DEBUG = config('DEBUG', default=False, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='', cast=Csv())
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=Csv())
+CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='', cast=Csv())
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -60,12 +61,26 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "ecommerce.wsgi.application"
 
-# WAŻNA ZMIANA TUTAJ - konfiguracja PostgreSQL przez docker-compose
-DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL')
-    )
-}
+NAME = str(os.getenv('AZURE_POSTGRESQL_NAME'))
+USER = str(os.getenv('AZURE_POSTGRESQL_USERNAME'))
+PASSWORD = str(os.getenv('AZURE_POSTGRESQL_PASSWORD'))
+HOST = str(os.getenv('AZURE_POSTGRESQL_HOST'))
+PORT = int(os.environ.get('AZURE_POSTGRESQL_PORT', 5432))
+
+if NAME and USER and PASSWORD and HOST and PORT:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': NAME,
+            'USER': USER,
+            'PASSWORD': PASSWORD,
+            'HOST': HOST,
+            'PORT': PORT,
+            'OPTIONS': {
+                'sslmode': 'require'
+            },
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
