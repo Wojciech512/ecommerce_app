@@ -1,20 +1,14 @@
 import os
 from pathlib import Path
-from decouple import config
+from decouple import config, Csv
+import dj_database_url
 
-# Ścieżka główna projektu
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Sekretny klucz aplikacji
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = config('SECRET_KEY', default='temp-key')
+DEBUG = config('DEBUG', default=False, cast=bool)
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='', cast=Csv())
 
-# Tryb debugowania
-DEBUG = True
-
-# Dozwolone hosty
-ALLOWED_HOSTS = ["*"]
-
-# Aplikacje zainstalowane
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -31,10 +25,8 @@ INSTALLED_APPS = [
     "storages",
 ]
 
-# Konfiguracja Crispy Forms
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
-# Middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -46,10 +38,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# Konfiguracja URL
 ROOT_URLCONF = "ecommerce.urls"
 
-# Szablony
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -68,63 +58,42 @@ TEMPLATES = [
     },
 ]
 
-# Aplikacja WSGI
 WSGI_APPLICATION = "ecommerce.wsgi.application"
 
-# Konfiguracja bazy danych (domyślnie SQLite dla środowiska deweloperskiego)
+# WAŻNA ZMIANA TUTAJ - konfiguracja PostgreSQL przez docker-compose
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
 }
 
-# Walidacja haseł
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# Międzynarodowe ustawienia
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# Pliki statyczne
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Pliki multimedialne
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Domyślny typ klucza głównego
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Konfiguracja poczty e-mail
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
-# Dodatkowe ustawienia
 SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
