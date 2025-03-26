@@ -61,23 +61,57 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "ecommerce.wsgi.application"
 
-NAME = str(os.getenv('AZURE_POSTGRESQL_NAME'))
-USER = str(os.getenv('AZURE_POSTGRESQL_USERNAME'))
-PASSWORD = str(os.getenv('AZURE_POSTGRESQL_PASSWORD'))
-HOST = str(os.getenv('AZURE_POSTGRESQL_HOST'))
-PORT = int(os.environ.get('AZURE_POSTGRESQL_PORT', 5432))
+AZURE_NAME = os.getenv('AZURE_POSTGRESQL_NAME')
+AZURE_USER = os.getenv('AZURE_POSTGRESQL_USERNAME')
+AZURE_PASSWORD = os.getenv('AZURE_POSTGRESQL_PASSWORD')
+AZURE_HOST = os.getenv('AZURE_POSTGRESQL_HOST')
+AZURE_PORT = os.environ.get('AZURE_POSTGRESQL_PORT', 5432)
 
-if NAME and USER and PASSWORD and HOST and PORT:
+GOOGLE_NAME = os.getenv('GOOGLE_POSTGRESQL_NAME')
+GOOGLE_USER = os.getenv('GOOGLE_POSTGRESQL_USERNAME')
+GOOGLE_PASSWORD = os.getenv('GOOGLE_POSTGRESQL_PASSWORD')
+GOOGLE_HOST = os.getenv('GOOGLE_POSTGRESQL_HOST')
+GOOGLE_PORT = os.environ.get('GOOGLE_POSTGRESQL_PORT', 5432)
+
+if AZURE_NAME and AZURE_USER and AZURE_PASSWORD and AZURE_HOST and AZURE_PORT:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': NAME,
-            'USER': USER,
-            'PASSWORD': PASSWORD,
-            'HOST': HOST,
-            'PORT': PORT,
+            'NAME': AZURE_NAME,
+            'USER': AZURE_USER,
+            'PASSWORD': AZURE_PASSWORD,
+            'HOST': AZURE_HOST,
+            'PORT': AZURE_PORT,
             'OPTIONS': {
                 'sslmode': 'require'
+            },
+        }
+    }
+elif GOOGLE_NAME and GOOGLE_USER and GOOGLE_PASSWORD and GOOGLE_HOST and GOOGLE_PORT:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': GOOGLE_NAME,
+            'USER': GOOGLE_USER,
+            'PASSWORD': GOOGLE_PASSWORD,
+            'HOST': GOOGLE_HOST,
+            'PORT': GOOGLE_PORT,
+            'OPTIONS': {
+                'sslmode': 'disable'
+            },
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'postgres',
+            'USER': 'postgres',
+            'PASSWORD': 'postgres',
+            'HOST': 'db',
+            'PORT': 5432,
+            'OPTIONS': {
+                'sslmode': 'disable'
             },
         }
     }
